@@ -1,5 +1,3 @@
-#a change on vscode
-
 from operator import add, sub
 
 
@@ -181,3 +179,6 @@ def quine_test():
     print("*" * 100)
     print(quine_output)
     print("*" * 100)
+
+'''a= input("get a:")
+print("TEST!! a=",a)'''

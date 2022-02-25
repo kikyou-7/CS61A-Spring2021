@@ -5,3 +5,5 @@
 'two_of_three_syntax_check-correct', (2048, 70)
 'change_short-correct', (2560, 70)
 'hailstone-correct', (3072, 70)
+'invert_short-correct', (3584, 70)
+'invert_and_change_syntax_check-correct', (4096, 70)
