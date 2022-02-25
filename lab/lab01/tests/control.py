@@ -27,8 +27,7 @@ test = {
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': False
+          'locked': True
         },
         {
           'code': r"""
@@ -40,7 +39,7 @@ test = {
           ...     elif x > 0:
           ...         print('small')
           ...     else:
-          ...         print("nothing")
+          ...         print("nothin")
           >>> how_big(7)
           fe4028bb37030ad778842d40ac93e700
           # locked
@@ -51,12 +50,11 @@ test = {
           fdb47b226224360303fcfb56870d356a
           # locked
           >>> how_big(-1)
-          d8e1cdfd7c1e2f4f4230deca5308e7c7
+          cb48e98854cd243baeb4f3026f909b64
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': False
+          'locked': True
         }
       ],
       'scored': False,
@@ -77,8 +75,7 @@ test = {
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': True
+          'locked': True
         },
         {
           'code': r"""
@@ -90,8 +87,7 @@ test = {
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': True
+          'locked': True
         },
         {
           'code': r"""
@@ -108,8 +104,7 @@ test = {
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': True
+          'locked': True
         }
       ],
       'scored': False,

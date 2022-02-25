@@ -13,7 +13,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': r"""
           In the following traceback, what is the most recent function call?
           Traceback (most recent call last):
@@ -37,7 +36,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': r"""
           In the following traceback, what is the cause of this error?
           Traceback (most recent call last):
@@ -89,7 +87,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': 'How do you write a doctest asserting that square(2) == 4?'
         },
         {
@@ -101,7 +98,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': 'When should you use print statements?'
         },
         {
@@ -113,7 +109,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': 'How do you prevent the ok autograder from interpreting print statements as output?'
         },
         {
@@ -126,7 +121,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': 'What is the best way to open an interactive terminal to investigate a failing test for question sum_digits in assignment lab01?'
         },
         {
@@ -139,7 +133,6 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': 'What is the best way to look at an environment diagram to investigate a failing test for question sum_digits in assignment lab01?'
         },
         {
@@ -153,8 +146,55 @@ test = {
           ],
           'hidden': False,
           'locked': True,
-          'multiline': False,
           'question': 'Which of the following is NOT true?'
+        },
+        {
+          'answer': '7b899f9edfdcffe34120375d36d49ff0',
+          'choices': [
+            'You had an unmatched parenthesis',
+            'Your indentation mixed tabs and spaces',
+            'You forgot a return statement',
+            'You typed a variable name incorrectly'
+          ],
+          'hidden': False,
+          'locked': True,
+          'question': 'You get a SyntaxError. What is most likely to have happened?'
+        },
+        {
+          'answer': '12da8f0e726f72da45b4fbde67210b74',
+          'choices': [
+            'You had an unmatched parenthesis',
+            'Your indentation mixed tabs and spaces',
+            'You forgot a return statement',
+            'You typed a variable name incorrectly'
+          ],
+          'hidden': False,
+          'locked': True,
+          'question': 'You get a IndentationError. What is most likely to have happened?'
+        },
+        {
+          'answer': 'af7bf6f5e80555885d574f5a2ab3153f',
+          'choices': [
+            'You had an unmatched parenthesis',
+            'Your indentation mixed tabs and spaces',
+            'You forgot a return statement',
+            'You typed a variable name incorrectly'
+          ],
+          'hidden': False,
+          'locked': True,
+          'question': "You get a TypeError: ... 'NoneType' object is not ... . What is most likely to have happened?"
+        },
+        {
+          'answer': '1d0b04e3bcf143b57b5f0b67e57c6801',
+          'choices': [
+            'You had an unmatched parenthesis',
+            'Your indentation mixed tabs and spaces',
+            'You forgot a return statement',
+            'You typed a variable name incorrectly'
+          ],
+          'hidden': False,
+          'locked': True,
+          'question': 'You get a NameError. What is most likely to have happened?'
         }
       ],
       'scored': False,

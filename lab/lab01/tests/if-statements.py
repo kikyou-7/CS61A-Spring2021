@@ -18,8 +18,7 @@ test = {
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': False
+          'locked': True
         },
         {
           'code': r"""
@@ -43,8 +42,7 @@ test = {
           # locked
           """,
           'hidden': False,
-          'locked': True,
-          'multiline': False
+          'locked': True
         }
       ],
       'scored': False,
