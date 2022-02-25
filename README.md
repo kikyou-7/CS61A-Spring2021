@@ -4,7 +4,8 @@
 1. $ git init
 2. $ git add .
 3. $ git commit -m"***"
-4. $ git push origin master
+4. (如果github仓库有修改,需要先 git pull origin master 更新本地仓库)
+5. $ git push origin master
 
 
 作业在终端中的命令行语句:
