@@ -91,11 +91,16 @@ def more_boar(player_score, opponent_score):
     >>> more_boar(7, 8)
     False
     """
-    # BEGIN PROBLEM 4
-    d1 = player_score % 10
+    # BEGIN PROBLEM 4  
+    if player_score >= 100:
+        player_score //= 10
+    if opponent_score >= 100:
+        opponent_score //= 10
+    d1 = player_score % 10  
     player_score //= 10
-    d2 = opponent_score % 10
+    d2 = opponent_score % 10  
     opponent_score //= 10
+
     return d1<d2 and player_score < opponent_score
     # END PROBLEM 4
 
@@ -300,7 +305,15 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     1
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    max_avg = 0 
+    ans = 1 
+    for i in range(1,11):
+        make_avg = make_averaged(roll_dice,trials_count)
+        temp = make_avg(i,dice)
+        if temp > max_avg:
+            max_avg = temp
+            ans = i
+    return ans
     # END PROBLEM 9
 
 
@@ -341,7 +354,11 @@ def piggypoints_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    score_piggy = piggy_points(opponent_score) 
+    if score_piggy >= cutoff:
+        return 0
+    else:
+        return num_rolls
     # END PROBLEM 10
 
 
@@ -351,7 +368,11 @@ def more_boar_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    score_piggy = piggy_points(opponent_score)
+    if more_boar(score+score_piggy, opponent_score):
+        return 0
+    else:
+        return piggypoints_strategy(score,opponent_score,cutoff,num_rolls)
     # END PROBLEM 11
 
 

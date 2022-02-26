@@ -24,7 +24,7 @@ def make_fair_dice(sides):
     return dice
 
 four_sided = make_fair_dice(4)
-six_sided = make_fair_dice(6) #function pointer
+six_sided = make_fair_dice(6) 
 
 def make_test_dice(*outcomes):
     """Return a die that cycles deterministically through OUTCOMES.
