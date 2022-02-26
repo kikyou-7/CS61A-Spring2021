@@ -9,5 +9,7 @@
 
 
 利用ok脚本在终端中的测评命令行语句:  
-python -m doctest hwxx.py #本地测试,如果有fail case会返回相关信息  
+python -m doctest xx.py #本地测试,如果有fail case会返回相关信息  
 python ok --local #利用ok脚本进行测评  
+python ok -q xx --local # 单独测试某题/某个函数  
+python ok -q xx -u --local # 与某题交互,帮助理解题意
