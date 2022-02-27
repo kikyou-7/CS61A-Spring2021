@@ -16,6 +16,7 @@
 $ git add .
 $ git commit -m "本地提交的备注"
 $ git push origin -u master	//第一次上传
+$ git pull origin master //远程仓库有修改,需要先拉取到本地仓库
 $ git push origin master	//不是第一次上传，更新数据
 
 项目组成员克隆项目:
