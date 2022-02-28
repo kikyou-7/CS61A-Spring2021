@@ -380,9 +380,26 @@ def final_strategy(score, opponent_score):
     """Write a brief description of your final strategy.
 
     *** YOUR DESCRIPTION HERE ***
+    Firstly,we check whether it will get GOAL_SCORE when we take piggy,
+    if not,check that if we take piggy,will the opponent get a good Situation(like get GOAL_
+    SCORE after piggy) ,if it does,we should not take piggy
+    if not,we take piggy if it help us get more scores than best_num
+    otherwise we take best_num
     """
     # BEGIN PROBLEM 12
-    return 6  # Replace this statement
+    score_piggy = piggy_points(opponent_score)
+    best_num = 6
+    max_score = roll_dice(best_num)
+    score_add = score + score_piggy
+    oppo_piggy = piggy_points(score_add)
+    if score_piggy + score >= GOAL_SCORE :
+        return 0
+    if oppo_piggy + opponent_score >= GOAL_SCORE or\
+    oppo_piggy >= max_score or\
+    oppo_piggy > score_piggy:
+        return best_num  
+    return 0 if score_piggy > max_score else best_num
+
     # END PROBLEM 12
 
 ##########################

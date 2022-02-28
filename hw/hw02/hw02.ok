@@ -1,6 +1,6 @@
 {
     "name": "Homework 2",
-    "endpoint": "cal/cs61a/fa21/hw02",
+    "endpoint": "cal/cs61a/sp21/hw02",
     "src": [
         "hw02.py"
     ],
@@ -13,7 +13,7 @@
         "accumulate",
         "summation_using_accumulate",
         "product_using_accumulate",
-        "accumulate_syntax_check"
+        "make_repeater"
     ],
     "protocols": [
         "restore",
