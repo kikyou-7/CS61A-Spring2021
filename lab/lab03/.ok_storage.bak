@@ -1,0 +1,5 @@
+'Recursion-correct', (0, 70)
+'Self-Reference-correct', (512, 70)
+'summation-correct', (1024, 70)
+'pascal-correct', (1536, 70)
+'repeated-correct', (2048, 70)
