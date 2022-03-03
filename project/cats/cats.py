@@ -32,7 +32,15 @@ def choose(paragraphs, select, k):
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
     # END PROBLEM 1
-
+    idx = -1
+    ans = ""
+    for words in paragraphs:
+        if select(words):
+            idx += 1
+        if idx == k:
+            ans = words
+            break
+    return ans
 
 def about(topic):
     """Return a select function that returns whether
@@ -51,7 +59,12 @@ def about(topic):
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
     # END PROBLEM 2
-
+    def match(words):   
+        for word in split(lower(remove_punctuation(words))):
+            if word in topic:
+                return True
+        return False
+    return match
 
 def accuracy(typed, reference):
     """Return the accuracy (percentage of words typed correctly) of TYPED
@@ -81,6 +94,19 @@ def accuracy(typed, reference):
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
     # END PROBLEM 3
+    if typed == "":
+        if reference == "":
+            return 100.0
+        else:
+            return 0.0
+    words = split(typed)
+    num_match = 0
+    for p in zip(words,split(reference)):
+    # 应该把字符串切成子串列表，再用zip聚集起来
+        if p[0] == p[1]:
+            num_match += 1
+    #print("match:",num_match)
+    return num_match / len(words) * 100
 
 
 def wpm(typed, elapsed):
@@ -99,7 +125,7 @@ def wpm(typed, elapsed):
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
     # END PROBLEM 4
-
+    return len(typed)/5 * 60.0 /elapsed
 
 ###########
 # Phase 2 #
@@ -126,7 +152,16 @@ def autocorrect(typed_word, valid_words, diff_function, limit):
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
     # END PROBLEM 5
+    if typed_word in valid_words:
+        return typed_word
+    
+    diff_list = [diff_function(word,typed_word,limit) for word in valid_words]
+    if min(diff_list) > limit:
+        return typed_word 
+    else:
+        return valid_words[ diff_list.index(min(diff_list)) ]
 
+        
 
 def sphinx_switches(start, goal, limit):
     """A diff function for autocorrect that determines how many letters
@@ -151,7 +186,21 @@ def sphinx_switches(start, goal, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    ''' notes : If the count is larger than limit,return limt+1 and minimsize the computation,
+    which means when count eauqls to limit+1 we shoule return immediately'''
+    len0, len1 = len(start)-1, len(goal)-1
+    def dfs(d0,d1,count):
+        if count > limit: # see here
+            return limit+1
+        if d0>len0 and d1>len1:
+            return count
+        elif  d0>len0 or d1>len1:
+            return dfs(d0+1,d1+1,count+1)
+        elif start[d0] == goal[d1]:
+            return dfs(d0+1,d1+1,count)
+        else:
+            return dfs(d0+1,d1+1,count+1)
+    return dfs(0,0,0)
     # END PROBLEM 6
 
 
@@ -172,32 +221,41 @@ def pawssible_patches(start, goal, limit):
     >>> pawssible_patches("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-
-    if ______________:  # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-
-    elif ___________:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-
+    #assert False, 'Remove this line'
+    if limit < 0:
+        return 0 
+    elif not start and not goal:
+        return 0
+    elif not start or not goal:
+        return len(start) if start else len(goal)
+    elif start[0] == goal[0]:
+        return pawssible_patches(start[1:], goal[1:], limit)
+    # 对于不匹配的情况,要么增加，要么删除，要么替换,枚举取min
     else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+        add = pawssible_patches(start, goal[1:], limit-1)
+        rmv = pawssible_patches(start[1:], goal, limit-1)
+        sub = pawssible_patches(start[1:], goal[1:], limit-1)
+        return min(limit+1,min(add,rmv,sub) + 1)
 
 
 def final_diff(start, goal, limit):
     """A diff function that takes in a string START, a string GOAL, and a number LIMIT.
     If you implement this function, it will be used."""
-    assert False, 'Remove this line to use your final_diff function.'
-
+    #assert False, 'Remove this line to use your final_diff function.'
+    if limit < 0:
+        return 0 
+    elif not start and not goal:
+        return 0
+    elif not start or not goal:
+        return len(start) if start else len(goal)
+    elif start[0] == goal[0]:
+        return pawssible_patches(start[1:], goal[1:], limit)
+    # 对于不匹配的情况,要么增加，要么删除，要么替换,枚举取min
+    else:
+        add = pawssible_patches(start, goal[1:], limit-1)
+        rmv = pawssible_patches(start[1:], goal, limit-1)
+        sub = pawssible_patches(start[1:], goal[1:], limit-1)
+        return min(limit+1,min(add,rmv,sub) + 1)
 
 FINAL_DIFF_LIMIT = 6  # REPLACE THIS WITH YOUR LIMIT
 
@@ -233,7 +291,15 @@ def report_progress(typed, prompt, user_id, send):
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
     # END PROBLEM 8
-
+    ret = 0
+    for word in zip(typed,prompt):
+        if word[0] == word[1]:
+            ret += 1
+        else:
+            break
+    ret /= len(prompt)
+    send({'id':user_id, 'progress': ret}) 
+    return ret
 
 def fastest_words_report(times_per_player, words):
     """Return a text description of the fastest words typed by each player."""
@@ -265,6 +331,13 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    n = [len(i) for i in times_per_player]
+    for i in range(len(n)):
+        for idx in range(n[i]-1,0,-1):
+            times_per_player[i][idx] -=  times_per_player[i][idx-1]
+        if n[i]:
+            times_per_player[i][0:1] = []
+    return game(words, times_per_player)
     # END PROBLEM 9
 
 
@@ -283,6 +356,16 @@ def fastest_words(game):
     word_indices = range(len(all_words(game)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    times, words = all_times(game), all_words(game)
+    time = [[p[i] for p in times] for i in word_indices]
+    ans = []
+    for player_id in player_indices:
+        temp = []
+        for t in word_indices:
+            if player_id == time[t].index(min(time[t])):
+                temp.append(words[t])
+        ans.append(temp)
+    return ans
     # END PROBLEM 10
 
 
