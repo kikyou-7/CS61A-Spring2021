@@ -16,7 +16,23 @@ def insert_items(lst, entry, elem):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    '''n = len(lst)
+    i = 0
+    while i<n:
+        if lst[i]==entry:
+            lst[i:i+1] = [lst[i],elem]
+            i += 1
+            n += 1
+        i += 1
+    return lst'''
+    f = 0
+    for x in range(len(lst)):
+        if f==1:
+            f=0
+        elif lst[x] == entry:
+            lst.insert(x+1, elem)
+            f=1
+    return lst
 
 def naturals():
     """A generator function that yields the infinite sequence of natural
@@ -48,7 +64,9 @@ def scale(it, multiplier):
     [2, 4, 6, 8, 10]
     """
     "*** YOUR CODE HERE ***"
-
+    for x in it:
+        x *= multiplier
+        yield x 
 
 def hailstone(n):
     """Yields the elements of the hailstone sequence starting at n.
@@ -65,3 +83,10 @@ def hailstone(n):
     1
     """
     "*** YOUR CODE HERE ***"
+    while n != 1:
+        yield n 
+        if n % 2 == 0:
+            n //= 2
+        else:
+            n = 3*n+1
+    yield n
