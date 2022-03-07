@@ -108,6 +108,7 @@ class Ant(Insect):
     implemented = False  # Only implemented Ant classes should be instantiated
     food_cost = 0
     blocks_path = True
+    buffed = 0 # damge multiply
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, health=1):
@@ -158,7 +159,10 @@ class Ant(Insect):
     def buff(self):
         """Double this ants's damage, if it has not already been buffed."""
         # BEGIN Problem EC
-        "*** YOUR CODE HERE ***"
+        if not self.buffed:
+            self.buffed = 1
+            if self.damage:
+                self.damage *= 2 
         # END Problem EC
 
 
@@ -433,7 +437,7 @@ class ScubaThrower(ThrowerAnt):
 # BEGIN Problem EC
 
 
-class QueenAnt(Ant):  # You should change this line
+class QueenAnt(ScubaThrower):  # You should change this line
 # END Problem EC
     """The Queen of the colony. The game is over if a bee enters her place."""
 
@@ -441,12 +445,18 @@ class QueenAnt(Ant):  # You should change this line
     food_cost = 7
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    queen_deloyed = False
     # END Problem EC
 
     def __init__(self, health=1):
         # BEGIN Problem EC
-        "*** YOUR CODE HERE ***"
+        ScubaThrower.__init__(self, health)
+        if QueenAnt.queen_deloyed:
+            self.imposter = True
+        else:
+            self.imposter = False
+            QueenAnt.queen_deloyed = True
         # END Problem EC
 
     def action(self, gamestate):
@@ -456,7 +466,17 @@ class QueenAnt(Ant):  # You should change this line
         Impostor queens do only one thing: reduce their own health to 0.
         """
         # BEGIN Problem EC
-        "*** YOUR CODE HERE ***"
+        if self.imposter:
+            ScubaThrower.reduce_health(self, self.health)
+        else:
+            ScubaThrower.action(self, gamestate)
+            pos = self.place.exit
+            while pos:
+                if pos.ant:
+                    pos.ant.buff()
+                    if pos.ant.is_container() and pos.ant.contained_ant:
+                        pos.ant.contained_ant.buff()
+                pos = pos.exit
         # END Problem EC
 
     def reduce_health(self, amount):
@@ -464,9 +484,16 @@ class QueenAnt(Ant):  # You should change this line
         remaining, signal the end of the game.
         """
         # BEGIN Problem EC
-        "*** YOUR CODE HERE ***"
+        if amount >= self.health and not self.imposter:
+            bees_win()
+        Ant.reduce_health(self, amount)
         # END Problem EC
 
+    def remove_from(self, place):
+        if self.imposter:
+            Ant.remove_from(self, place)
+        else:
+            pass
 
 class AntRemover(Ant):
     """Allows the player to remove ants from the board in the GUI."""
@@ -484,8 +511,13 @@ class Bee(Insect):
     name = 'Bee'
     damage = 1
     is_watersafe = True
-    # OVERRIDE CLASS ATTRIBUTES HERE
 
+    # OVERRIDE CLASS ATTRIBUTES HERE
+    def __init__(self,health=1,place=None):
+        Insect.__init__(self, health,place)
+        self.scared = False 
+        self.scare_turn = 0
+        self.slow_turn = []
     def sting(self, ant):
         """Attack an ANT, reducing its health by 1."""
         if ant:
@@ -493,14 +525,21 @@ class Bee(Insect):
 
     def move_to(self, place):
         """Move from the Bee's current Place to a new PLACE."""
-        self.place.remove_insect(self)
-        place.add_insect(self)
+        if not place or place.is_hive():
+            pass
+        else:
+            self.place.remove_insect(self)
+            place.add_insect(self)
 
     def blocked(self):
         """Return True if this Bee cannot advance to the next Place."""
         # Special handling for NinjaAnt
         # BEGIN Problem Optional 1
-        return self.place.ant is None or self.place.ant.blocks_path
+        #self.place.ant is None or  
+        if self.place.ant:
+            return self.place.ant.blocks_path
+        else:
+            return False
         # END Problem Optional 1
 
     def action(self, gamestate):
@@ -509,7 +548,11 @@ class Bee(Insect):
 
         gamestate -- The GameState, used to access game state information.
         """
-        destination = self.place.exit
+        if self.scare_turn:
+            destination = self.place.entrance
+            self.scare_turn -= 1
+        else:
+            destination = self.place.exit
         # Extra credit: Special handling for bee direction
         # BEGIN Problem Optional 2
         "*** YOUR CODE HERE ***"
@@ -531,7 +574,7 @@ class Bee(Insect):
         """Apply a status lasting LENGTH turns that causes bee to execute
         the previous .action on even-numbered turns."""
         # BEGIN Problem Optional 2
-        "*** YOUR CODE HERE ***"
+        self.slow_turn.append(length)
         # END Problem Optional 2
 
     def scare(self, length):
@@ -539,7 +582,9 @@ class Bee(Insect):
         lasts for LENGTH turns that causes bee to go backwards."""
 
         # BEGIN Problem Optional 2
-        "*** YOUR CODE HERE ***"
+        if not self.scared:
+            self.scare_tun = length 
+            self.scared = True
         # END Problem Optional 2
 
     def apply_status(self, status, previous_action, length):
@@ -589,7 +634,6 @@ class SlowThrower(ThrowerAnt):
     # BEGIN Problem Optional 2
     implemented = False   # Change to True to view in the GUI
     # END Problem Optional 2
-
     def throw_at(self, target):
         if target:
             target.slow(3)
@@ -601,12 +645,12 @@ class ScaryThrower(ThrowerAnt):
     name = 'Scary'
     food_cost = 6
     # BEGIN Problem Optional 2
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem Optional 2
 
     def throw_at(self, target):
         # BEGIN Problem Optional 2
-        "*** YOUR CODE HERE ***"
+        target.scare(2)
         # END Problem Optional 2
 
 

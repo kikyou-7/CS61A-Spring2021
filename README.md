@@ -29,5 +29,11 @@ python -m doctest xx.py #本地测试,如果有fail case会返回相关信息
 python ok --local #利用ok脚本进行测评  
 python ok -q xx --local # 单独测试某题/某个函数  
 python ok -q xx -u --local # 与某题交互,帮助理解题意  
+python ok -q xx -v --local # 查看与某题交互的全部信息
+
+解释器中与xx.py文件交互： 
+python -i  #先进入解释器  
+from xx import *  #导入模块 
+
 
 
