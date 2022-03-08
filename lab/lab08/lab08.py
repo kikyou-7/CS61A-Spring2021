@@ -8,7 +8,12 @@ def insert_into_all(item, nested_list):
     [[0], [0, 1, 2], [0, 3]]
     """
     "*** YOUR CODE HERE ***"
-
+    ans =  []
+    for lt in nested_list:
+        ans.append(lt.copy())
+    for lst in ans:
+        lst.insert(0, item)
+    return ans
 
 def subseqs(s):
     """Return a nested list (a list of lists) of all subsequences of S.
@@ -20,11 +25,14 @@ def subseqs(s):
     >>> subseqs([])
     [[]]
     """
-    if ________________:
-        ________________
-    else:
-        ________________
-        ________________
+    n = len(s)
+    def dfs(s,idx):
+        if idx == n:
+            return  [list()]
+        lst = dfs(s, idx+1)
+        return lst + insert_into_all(s[idx], lst)
+    return dfs(s,0)
+
 
 
 def non_decrease_subseqs(s):
@@ -41,16 +49,23 @@ def non_decrease_subseqs(s):
     >>> sorted(seqs2)
     [[], [1], [1], [1, 1], [1, 1, 2], [1, 2], [1, 2], [2]]
     """
-    def subseq_helper(s, prev):
-        if not s:
-            return ____________________
-        elif s[0] < prev:
-            return ____________________
-        else:
-            a = ______________________
-            b = ______________________
-            return insert_into_all(________, ______________) + ________________
-    return subseq_helper(____, ____)
+    def insert(item, nested_list):
+        tmp =  []
+        for lt in nested_list:
+            tmp.append(lt.copy())
+        ans = []
+        for lst in tmp.copy():
+            if not lst or item <= lst[0]:
+                lst.insert(0, item)
+                ans.append(lst) #不满足单调性的不返回
+        return ans
+    n = len(s)
+    def dfs(s,idx):
+        if idx == n:
+            return  [list()]
+        lst = dfs(s, idx+1)
+        return lst + insert(s[idx], lst)
+    return dfs(s,0)
 
 
 def num_trees(n):
@@ -74,7 +89,10 @@ def num_trees(n):
 
     """
     "*** YOUR CODE HERE ***"
-
+    # nums_tree(n) = Σ nums_tree(i) * nums_tree(n-i) for i in range(1,n)
+    if n == 1:
+        return 1
+    return sum(num_trees(v) * num_trees(n-v) for v in range(1,n) )
 
 def merge(incr_a, incr_b):
     """Yield the elements of strictly increasing iterables incr_a and incr_b, removing
@@ -96,6 +114,26 @@ def merge(incr_a, incr_b):
     iter_a, iter_b = iter(incr_a), iter(incr_b)
     next_a, next_b = next(iter_a, None), next(iter_b, None)
     "*** YOUR CODE HERE ***"
+    while True:
+        if (not next_a)  and  (not next_b):
+            break 
+        elif not next_a:
+            yield next_b 
+            next_b = next(iter_b, None)
+        elif not next_b:
+            yield next_a 
+            next_a = next(iter_a, None)
+        else:
+            if next_a == next_b:
+                yield next_a 
+                next_a = next(iter_a, None)
+                next_b = next(iter_b, None)
+            elif next_a < next_b:
+                yield next_a 
+                next_a = next(iter_a, None)
+            else:
+                yield next_b
+                next_b = next(iter_b, None)
 
 
 class Button:

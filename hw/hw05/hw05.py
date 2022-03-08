@@ -36,7 +36,37 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, goods, price):
+        self.goods = goods 
+        self.price = price 
+        self.funds = 0
+        self.stock = 0 
+    
+    def vend(self):
+        diff = self.funds - self.price
+        if not self.stock:
+            return f'Inventory empty. Restocking required.'
+        elif diff < 0:
+            return f'You must add ${-1*diff} more funds.'
+        elif diff == 0:
+            self.funds = 0
+            self.stock -= 1
+            return f'Here is your {self.goods}.'   
+        else:
+            self.funds = 0
+            self.stock -= 1
+            return f'Here is your {self.goods} and ${diff} change.'
 
+    def add_funds(self, amount):
+        if not self.stock:
+            return f'Inventory empty. Restocking required. Here is your ${amount}.'
+        else:
+            self.funds += amount
+            return f'Current balance: ${self.funds}'
+
+    def restock(self, num):
+        self.stock += num 
+        return f'Current {self.goods} stock: {self.stock}'
 
 def store_digits(n):
     """Stores the digits of a positive number n in a linked list.
@@ -54,7 +84,37 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
-
+    '''
+    dig = []
+    while n:
+        dig.append(n%10)
+        n //= 10
+    lst = Link(0)
+    head = lst
+    for x in dig[::-1]:
+        temp = Link(x)
+        lst.rest = temp
+        lst = temp
+    lst.rest = Link.empty
+    return head.rest
+    '''
+    # 反转链表 先把head为止的部分切下来,进入循环后再接回去按 lst->head 的方向 ,lst为遍历到的表头
+    lst = Link(n%10)
+    n //= 10
+    tail = lst
+    while n:
+        tail.rest=Link(n%10)
+        n //= 10
+        tail = tail.rest 
+    head = Link.empty
+    while lst.rest:
+        sec = lst.rest 
+        lst.rest = head 
+        head = lst 
+        lst = sec 
+    lst.rest = head
+    return lst 
+    
 
 def path_yielder(t, value):
     """Yields all possible paths from the root of t to a node with the label value
@@ -92,11 +152,25 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
+    if t.label == value:
+        yield [value]
+    for c in t.branches:
+        # for x in path_yielder(c, value):
+        #     yield [t.label] + x  # x是一个list
+        # 等价于下面的写法 yield from iterable
+        yield from [[t.label]+cv for cv in path_yielder(c, value)]
 
-    for _______________ in _________________:
-        for _______________ in _________________:
+    '''lst = [t.label]
+    def dfs(t, lst): 
+        for c in t.branches:
+            lst.append(c.label)
+            if c.label == value:
+                yield lst
+            if not c.is_leaf:
+                dfs(c, lst)
+            lst.pop()
+    dfs(t, lst) Error :( '''
 
-            "*** YOUR CODE HERE ***"
 
 
 class Mint:
@@ -134,10 +208,11 @@ class Mint:
         self.update()
 
     def create(self, kind):
-        "*** YOUR CODE HERE ***"
+        return kind(self.year)
+
 
     def update(self):
-        "*** YOUR CODE HERE ***"
+        self.year = Mint.current_year
 
 
 class Coin:
@@ -145,7 +220,7 @@ class Coin:
         self.year = year
 
     def worth(self):
-        "*** YOUR CODE HERE ***"
+        return self.cents + max(0, Mint.current_year - self.year - 50)
 
 
 class Nickel(Coin):
@@ -182,7 +257,18 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
-
+    def dfs(t):
+        if t.is_leaf():
+            return (t.label,t.label,1) 
+        m0 = dfs(t.branches[0])
+        if len(t.branches) == 1:
+            f = 1 if (m0[2] and (m0[0]>t.label or m0[1]<=t.label)) else 0
+            return (m0[0], m0[1], f)
+        else:
+            m1 = dfs(t.branches[1]) 
+            f = 1 if(m0[2] and m1[2] and m0[1]<=t.label and m1[0]>t.label) else 0
+            return (m0[0], m1[1], f)
+    return bool(dfs(t)[2])
 
 def preorder(t):
     """Return a list of the entries in this tree in the order that they
@@ -194,7 +280,13 @@ def preorder(t):
     >>> preorder(Tree(2, [Tree(4, [Tree(6)])]))
     [2, 4, 6]
     """
-    "*** YOUR CODE HERE ***"
+    lst = []
+    def dfs(t, lst):
+        lst.append(t.label)
+        for c in t.branches:
+            dfs(c, lst)
+    dfs(t, lst)
+    return lst
 
 
 def generate_preorder(t):
@@ -208,8 +300,17 @@ def generate_preorder(t):
     >>> list(gen)
     [2, 3, 4, 5, 6, 7]
     """
-    "*** YOUR CODE HERE ***"
-
+    '''lst = []
+    def dfs(t):
+        lst.append(t.label)
+        for c in t.branches:
+            dfs(c) 
+    dfs(t)
+    for x in lst:
+        yield x '''
+    yield t.label 
+    for c in t.branches:
+        yield from generate_preorder(c)
 
 class Link:
     """A linked list.

@@ -8,7 +8,14 @@ def convert_link(link):
     []
     """
     "*** YOUR CODE HERE ***"
-
+    lst = []
+    def solve(link):
+        if not link:
+            return 
+        lst.append(link.first)
+        solve(link.rest)
+    solve(link)
+    return lst
 
 def cumulative_mul(t):
     """Mutates t so that each node's label becomes the product of all labels in
@@ -20,7 +27,9 @@ def cumulative_mul(t):
     Tree(105, [Tree(15, [Tree(5)]), Tree(7)])
     """
     "*** YOUR CODE HERE ***"
-
+    for c in t.branches:
+        cumulative_mul(c)
+        t.label *= c.label 
 
 def has_cycle(link):
     """Return whether link contains a cycle.
@@ -36,7 +45,15 @@ def has_cycle(link):
     >>> has_cycle(u)
     False
     """
-    "*** YOUR CODE HERE ***"
+    visited = dict()
+    def dfs(link):
+        if not link:
+            return False 
+        if id(link) in visited.keys():
+            return True
+        visited[id(link)] = 1 
+        return dfs(link.rest)
+    return dfs(link)
 
 
 def has_cycle_constant(link):
@@ -51,7 +68,29 @@ def has_cycle_constant(link):
     False
     """
     "*** YOUR CODE HERE ***"
-
+    # two pointers 
+    p0,p1 = link,link 
+    flag = 0
+    while flag < 10000:
+        if (not p1) or (not p0):
+            break
+    
+        p1 = p1.rest 
+        if not p1:
+            break 
+        if p1 == p0:
+            flag = 10000
+            break 
+        p1 = p1.rest 
+        if p1 == p0:
+            flag = 10000
+            break
+        p0 = p0.rest 
+        if p1 == p0:
+            flag = 10000
+            break 
+        flag += 1
+    return flag >= 10000
 
 def every_other(s):
     """Mutates a linked list so that all the odd-indiced elements are removed
@@ -71,7 +110,15 @@ def every_other(s):
     Link(4)
     """
     "*** YOUR CODE HERE ***"
-
+    def dfs(link,idx):
+        if not link:
+            return link
+        link.rest = dfs(link.rest, idx+1)
+        if idx % 2 == 1:
+            return link.rest 
+        else:
+            return link 
+    dfs(s,0)
 
 def reverse_other(t):
     """Mutates the tree such that nodes on every other (odd-depth) level
@@ -87,7 +134,15 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
-
+    def dfs(t, deep):
+        lst = [c.label for c in t.branches] 
+        lst.reverse()
+        if deep % 2 == 1:
+            for idx in range(len(lst)):
+                t.branches[idx].label =lst[idx] 
+        for c in t.branches:
+            dfs(c, deep+1)
+    dfs(t,1)
 
 class Link:
     """A linked list.
