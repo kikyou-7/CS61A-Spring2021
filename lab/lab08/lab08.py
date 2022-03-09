@@ -114,13 +114,14 @@ def merge(incr_a, incr_b):
     iter_a, iter_b = iter(incr_a), iter(incr_b)
     next_a, next_b = next(iter_a, None), next(iter_b, None)
     "*** YOUR CODE HERE ***"
+   
     while True:
-        if (not next_a)  and  (not next_b):
+        if (next_a is None) and (next_b is None):
             break 
-        elif not next_a:
+        elif next_a is None:
             yield next_b 
             next_b = next(iter_b, None)
-        elif not next_b:
+        elif next_b is None:
             yield next_a 
             next_a = next(iter_a, None)
         else:
@@ -174,26 +175,31 @@ class Keyboard:
     """
 
     def __init__(self, *args):
-        ________________
-        for _________ in ________________:
-            ________________
+        self.buttons = []
+        for v in args:
+            self.buttons.append(v)
 
     def press(self, info):
         """Takes in a position of the button pressed, and
         returns that button's output"""
-        if ____________________:
-            ________________
-            ________________
-            ________________
-        ________________
+        idx = None
+        for v in self.buttons:
+            if v.pos == info:
+                idx = v
+                break
+        if idx is None:
+            return ''
+        else:
+            idx.times_pressed += 1
+            return idx.key
 
     def typing(self, typing_input):
         """Takes in a list of positions of buttons pressed, and
         returns the total output"""
-        ________________
-        for ________ in ____________________:
-            ________________
-        ________________
+        ans = ""
+        for ipt in typing_input:
+            ans += self.press(ipt)
+        return ans
 
 
 class Account:
@@ -224,25 +230,37 @@ class Account:
         self.balance = 0
         self.holder = account_holder
         "*** YOUR CODE HERE ***"
+        self.times_withdraw = 0
+        self.times_deposit = 0
+        self.transactions = []
 
     def deposit(self, amount):
         """Increase the account balance by amount, add the deposit
         to the transaction history, and return the new balance.
         """
-        "*** YOUR CODE HERE ***"
+        self.balance += amount 
+        self.transactions.append( ('deposit', amount) )
+        self.times_deposit += 1
+        return self.balance
 
     def withdraw(self, amount):
         """Decrease the account balance by amount, add the withdraw
         to the transaction history, and return the new balance.
         """
-        "*** YOUR CODE HERE ***"
+        if self.balance >= amount:
+            self.balance -= amount 
+            self.transactions.append(('withdraw', amount))
+            self.times_withdraw += 1
+            return self.balance
+
 
     def __str__(self):
         "*** YOUR CODE HERE ***"
+        return f"{self.holder}'s Balance: ${self.balance}"
 
     def __repr__(self):
         "*** YOUR CODE HERE ***"
-
+        return f'Accountholder: {self.holder}, Deposits: {self.times_deposit}, Withdraws: {self.times_withdraw}'
 
 def trade(first, second):
     """Exchange the smallest prefixes of first and second that have equal sum.
@@ -271,17 +289,23 @@ def trade(first, second):
     >>> c
     [4, 3, 1, 4, 1]
     """
-    m, n = 1, 1
+    m, n = 0, 0    
+    s0, s1 = first[m], second[n]
+    equal_prefix = lambda s0,s1: True if s0==s1 else False 
 
-    equal_prefix = lambda: ______________________
-    while _______________________________:
-        if __________________:
+    while not equal_prefix(s0, s1) \
+        and m < len(first) and n < len(second):
+        if s0 < s1:
             m += 1
+            if m < len(first):
+                s0 += first[m]
         else:
             n += 1
+            if n < len(second):
+                s1 += second[n]
 
-    if equal_prefix():
-        first[:m], second[:n] = second[:n], first[:m]
+    if equal_prefix(s0, s1):
+        first[:m+1], second[:n+1] = second[:n+1], first[:m+1]
         return 'Deal!'
     else:
         return 'No deal!'
@@ -313,11 +337,11 @@ def shuffle(cards):
     ['A♡', 'A♢', 'A♤', 'A♧', '2♡', '2♢', '2♤', '2♧', '3♡', '3♢', '3♤', '3♧']
     """
     assert len(cards) % 2 == 0, 'len(cards) must be even'
-    half = _______________
+    half = len(cards) // 2
     shuffled = []
-    for i in _____________:
-        _________________
-        _________________
+    for i in range(half):
+        shuffled.append(cards[i])
+        shuffled.append(cards[i+half])
     return shuffled
 
 
@@ -342,7 +366,27 @@ def insert(link, value, index):
     IndexError: Out of bounds!
     """
     "*** YOUR CODE HERE ***"
+    node = Link(value)
+    if index==0:
+        link.rest = Link(link.first, link.rest)
+        link.first = value
+        return
 
+    pos = 0
+    p = link 
+    while p is not Link.empty:
+        if pos+1 == index:
+            if p.rest is Link.empty:
+                raise IndexError('Out of bounds!')
+            else:
+                tmp = p.rest
+                node.rest = tmp
+                p.rest = node
+                break 
+        pos += 1
+        p = p.rest
+    if p is Link.empty:
+        raise IndexError('Out of bounds!')
 
 def deep_len(lnk):
     """ Returns the deep length of a possibly deep linked list.
@@ -358,12 +402,12 @@ def deep_len(lnk):
     >>> deep_len(levels)
     5
     """
-    if ______________:
+    if lnk is Link.empty:
         return 0
-    elif ______________:
+    elif lnk.rest is Link.empty:
         return 1
     else:
-        return _________________________
+        return 1 + deep_len(lnk.rest)
 
 
 def make_to_string(front, mid, back, empty_repr):
@@ -382,10 +426,10 @@ def make_to_string(front, mid, back, empty_repr):
     '()'
     """
     def printer(lnk):
-        if ______________:
-            return _________________________
+        if lnk is Link.empty:
+            return empty_repr
         else:
-            return _________________________
+            return f'{front}{lnk.first}{mid}{printer(lnk.rest)}{back}'
     return printer
 
 
@@ -406,11 +450,13 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ___________________________:
-        largest = max(_______________, key=____________________)
-        _________________________
-    for __ in _____________:
-        ___________________
+    if len(t.branches) > n:
+        lst = sorted([x.label for x in t.branches])[0:n] 
+        for c in t.branches.copy():
+            if c.label not in lst:
+                t.branches.remove(c)
+    for c in t.branches:
+        prune_small(c, n)
 
 
 def long_paths(t, n):
@@ -464,8 +510,18 @@ def long_paths(t, n):
     [[0, 11, 12, 13, 14]]
     """
     "*** YOUR CODE HERE ***"
-
-
+    lst = []
+    path = []
+    def dfs(t,deep):
+        path.append(t.label)
+        if t.is_leaf() and  deep >= n:
+            lst.append(list(path))
+        for c in t.branches:
+            dfs(c, deep+1)
+        path.pop()
+    dfs(t, 0)
+    return lst
+        
 class Link:
     """A linked list.
 
