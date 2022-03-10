@@ -31,9 +31,16 @@ python ok -q xx --local # 单独测试某题/某个函数
 python ok -q xx -u --local # 与某题交互,帮助理解题意  
 python ok -q xx -v --local # 查看与某题交互的全部信息
 
-解释器中与xx.py文件交互： 
+解释器中与xx.py文件交互:  
+
 python -i  #先进入解释器  
-from xx import *  #导入模块 
+from xx import *  #导入模块  
+
+进入lab自带的scheme解释器:  
+
+python scheme  
+
+python3 scheme -i <file.scm>  
 
 
 
