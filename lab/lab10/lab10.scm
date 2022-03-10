@@ -28,6 +28,7 @@
 ;     h
 ; )
 
+
 (define lst (list (list 1) 2 (list 3 4) 5) )
 ;(define lst '((1) 2 (3 4) 5)) is also ac
 
