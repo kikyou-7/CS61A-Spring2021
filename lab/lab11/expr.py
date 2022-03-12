@@ -106,7 +106,10 @@ class Name(Expr):
         >>> print(Name('c').eval(env))
         None
         """
-        "*** YOUR CODE HERE ***"
+        if self.var_name in env.keys():
+            return env[self.var_name]
+        else:
+            return None
 
 
     def __str__(self):
