@@ -1,3 +1,20 @@
-(define (split-at lst n) 'YOUR-CODE-HERE)
+(define (split-at lst n) 
+    (define (solv l1 tail idx)
+        (if (null? tail)
+            (cons l1 nil)
+            (if (< idx n) ;merger two list using (append list list)
+                (solv (append l1 (list (car tail))) (cdr tail) (+ 1 idx) )
+                (cons l1 tail)
+            )
+        )
+    )
+    (solv '() lst 0)
+)
 
-(define (compose-all funcs) 'YOUR-CODE-HERE)
+(define (compose-all funcs) 
+    (if (null? funcs)
+        (lambda (x) x) ;the outway of recurse is 'identity'
+        
+        (lambda (x) ((compose-all (cdr funcs)) ((car funcs) x)) )
+    )
+)
