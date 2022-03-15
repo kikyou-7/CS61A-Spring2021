@@ -110,8 +110,6 @@ class Name(Expr):
             return env[self.var_name]
         else:
             return None
-
-
     def __str__(self):
         return self.var_name
 
@@ -177,7 +175,20 @@ class CallExpr(Expr):
         Number(14)
         """
         "*** YOUR CODE HERE ***"
-
+# read('add(add(add(1,1),1),1)') 
+# CallExpr(Name('add'), [CallExpr(Name('add'), [CallExpr(Name('add'), \
+# [Literal(1), Literal(1)]), Literal(1)]), Literal(1)])         
+# operands中也有 CallExpr LambdaExpr类的实例,需要eval计算得到值
+        
+        #operator 是一个Name的实例,先把值计算出来
+        #operands 每个元素都是一个表达式对象 需要把值先算出来 再 apply
+        op = self.operator.eval(env) # lambda表达式会通过字典更新env 将变量替换成映射 
+        if op is None:
+            raise NameError(f"{self.operator} is not defined")
+        v = []
+        for p in self.operands:
+            v.append(p.eval(env))
+        return op.apply(v)
 
     def __str__(self):
         function = str(self.operator)
@@ -261,9 +272,9 @@ class LambdaFunction(Value):
     """
     def __init__(self, parameters, body, parent):
         Value.__init__(self, parameters, body, parent)
-        self.parameters = parameters
-        self.body = body
-        self.parent = parent
+        self.parameters = parameters # a list of arugments
+        self.body = body # instance of some Expr
+        self.parent = parent 
 
     def apply(self, arguments):
         """
@@ -287,7 +298,15 @@ class LambdaFunction(Value):
             raise TypeError("Oof! Cannot apply number {} to arguments {}".format(
                 comma_separated(self.parameters), comma_separated(arguments)))
         "*** YOUR CODE HERE ***"
-
+        # self.parameters 中每个元素都是字符串 表示传进去的参数的变量名
+        # 通过zip与字典将这些变量名与参数对应绑定，并更新环境
+        # self.body 是一个 Expr 实例,可能是CallExpr 也可以是 LambdaExpr
+        # 最后在新环境中 求出body表达式的值即可
+        new_env = self.parent.copy()
+        for x, arg in zip(self.parameters, arguments):
+            new_env.update({x : arg}) # 如果arg是LambdaExpr的实例
+                                      # 会在body.eval 时计算得到一个lambda函数 (函数是一个值!)
+        return self.body.eval(new_env)
 
     def __str__(self):
         definition = LambdaExpr(self.parameters, self.body)
