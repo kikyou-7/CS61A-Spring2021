@@ -168,8 +168,11 @@ def make_anonymous_factorial():
     """
     #I think I am failed to solve it :( , these code is accepted but it is more like cheat
     # because it call "reduce" here
-    from functools import reduce
-    return lambda n: reduce(mul,range(1,n+1))
+    
+    '''from functools import reduce
+    return lambda n: reduce(mul,range(1,n+1))'''
+
+    return (lambda f: f(f))(lambda f: lambda x: 1 if x==0 else x*f(f)(x-1))
 
 
 def print_move(origin, destination):
